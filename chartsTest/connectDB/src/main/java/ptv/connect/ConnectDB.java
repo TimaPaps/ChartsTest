@@ -7,8 +7,11 @@ public class ConnectDB {
     private static ResultSet rs = null;
 
     public static void connectDB() {
+        String url = "jdbc:postgresql://127.0.0.1:5432/charts_test";
+        String user = "tima";
+        String password = "";
         try (Connection conn = DriverManager.getConnection(
-                "jdbc:postgresql://127.0.0.1:5432/charts_test", "tima", "")) {
+                url, user, password)) {
 
             if (conn != null) {
                 System.out.println("Connected to the database!");
@@ -19,8 +22,8 @@ public class ConnectDB {
             String queryRead = "SELECT * FROM core_sensors";
 
             stmt = conn.createStatement();
-            rs = stmt.executeQuery(queryRead);
-/*
+/*            rs = stmt.executeQuery(queryRead);
+
             while (rs.next()) {
                 int id = rs.getInt(1);
                 String create_at = rs.getString(2);
@@ -48,7 +51,7 @@ public class ConnectDB {
                 i++;
             }
 
-            rs.close();
+            //rs.close();
             stmt.close();
             //conn.close();
 
