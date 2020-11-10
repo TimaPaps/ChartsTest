@@ -2,22 +2,15 @@ package ptv.main;
 
 import org.jfree.ui.RefineryUtilities;
 import ptv.show.ChartsShow;
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
-
 import static ptv.connect.ConnectDB.connectDB;
-import static ptv.show.ChartsShow.readerDB;
-import static ptv.show.ReaderDB.listenToNotifyMessage;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        connectDB();
+//        connectDB();
 
-        //listenToNotifyMessage();
-
-        readerDB();
+//        listenToNotifyMessage();
 
         ChartsShow demo = new ChartsShow("Тестовая отрисовка");
         demo.pack();
@@ -42,6 +35,6 @@ public class Main {
         Notifier notifier = new Notifier(nConn);
         listener.start();
         notifier.start();
- */
+*/
     }
 }

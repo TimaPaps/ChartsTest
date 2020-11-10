@@ -1,9 +1,8 @@
-package ptv.show;
+/*package ptv.show;
 
 import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
 import com.impossibl.postgres.jdbc.PGDataSource;
-
 import java.sql.Statement;
 
 public class ReaderDB {
@@ -32,8 +31,10 @@ public class ReaderDB {
         /*    while (true) {
                 System.out.println("my new write");
             }*/
+/*
         } catch (Exception e) {
             System.err.println(e);
         }
     }
 }
+*/

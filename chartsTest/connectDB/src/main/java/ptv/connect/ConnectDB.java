@@ -22,18 +22,7 @@ public class ConnectDB {
             String queryRead = "SELECT * FROM core_sensors";
 
             stmt = conn.createStatement();
-/*            rs = stmt.executeQuery(queryRead);
 
-            while (rs.next()) {
-                int id = rs.getInt(1);
-                String create_at = rs.getString(2);
-                int value_1 = rs.getInt(3);
-                int value_2 = rs.getInt(4);
-                int value_3 = rs.getInt(5);
-
-                System.out.printf("id: %d, create_at: %s, value_1: %s, value_2: %s, value_3: %s; ", id, create_at, value_1, value_2, value_3);
-            }
-*/
             int i = 0;
             int[] list = {001, 002, 003};
             while (i < 1) {
