@@ -32,10 +32,8 @@ public class ChartsShow extends ApplicationFrame {
         String password = "";
 
         Map<Integer, TimeSeries> series = new HashMap<>();
-/*        TimeSeries s1 = new TimeSeries("Датчик №1");
-        TimeSeries s2 = new TimeSeries("Датчик №2");
-        TimeSeries s3 = new TimeSeries("Датчик №3");
-*/
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+
         try (Connection conn = DriverManager.getConnection(
                 url, user, password)) {
 
@@ -45,25 +43,17 @@ public class ChartsShow extends ApplicationFrame {
                 System.out.println("Failed to make connection!");
             }
 
-            String queryReadSensor = "SELECT sensor FROM core_sensors";
+            String queryReadSensor = "SELECT DISTINCT sensor FROM core_sensors";
 
             stmt = conn.createStatement();
             rs = stmt.executeQuery(queryReadSensor);
 
-
-
-
             while (rs.next()) {
                 int sensor = rs.getInt(1);
-                series.put(sensor, new TimeSeries("Датчик № " + sensor));
+                TimeSeries s = new TimeSeries("Датчик № " + sensor);
+                series.put(sensor, s);
+                dataset.addSeries(s);
             }
-//                int id = rs.getInt(1);
-//                Timestamp received_at = rs.getTimestamp(2);
-//                double value_1 = rs.getDouble(4);
-//                double value_2 = rs.getDouble(5);
-//                double value_3 = rs.getDouble(6);
-//                System.out.println(sensor);
-//                Second s = new Second(received_at);
 
             String queryRead = "SELECT * FROM core_sensors";
 
@@ -77,7 +67,7 @@ public class ChartsShow extends ApplicationFrame {
                 double value_3 = rs.getDouble(6);
                 Second s = new Second(received_at);
 
-                series.get(sensor).addOrUpdate(s, value_1);
+                series.get(sensor).addOrUpdate(s, value_3);
             }
 
             rs.close();
@@ -91,12 +81,6 @@ public class ChartsShow extends ApplicationFrame {
             e.printStackTrace();
         }
 
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
-        series.forEach((k, v) -> dataset.addSeries(v));
-
-/*        dataset.addSeries(s1);
-        dataset.addSeries(s2);
-        dataset.addSeries(s3);*/
         return dataset;
     }
 
@@ -135,6 +119,10 @@ public class ChartsShow extends ApplicationFrame {
         plot.setDomainCrosshairVisible(true);
         plot.setRangeCrosshairVisible(true);
 
+        DateAxis xAxis = new DateAxis();
+        xAxis.setVerticalTickLabels(true);
+        plot.setDomainAxis(xAxis);
+
         XYItemRenderer r = plot.getRenderer();
         if (r instanceof XYLineAndShapeRenderer) {
             XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
@@ -144,7 +132,7 @@ public class ChartsShow extends ApplicationFrame {
         }
 
         DateAxis axis = (DateAxis) plot.getDomainAxis();
-        axis.setDateFormatOverride(new SimpleDateFormat("YYYY.MM.dd HH:mm:ss"));
+        axis.setDateFormatOverride(new SimpleDateFormat("YYYY.MM.dd HH:mm:ss:S"));
 
         return chart;
     }
