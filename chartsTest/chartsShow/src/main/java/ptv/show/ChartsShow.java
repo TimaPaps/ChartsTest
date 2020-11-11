@@ -16,6 +16,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChartsShow extends ApplicationFrame {
 
@@ -29,10 +31,11 @@ public class ChartsShow extends ApplicationFrame {
         String user = "tima";
         String password = "";
 
-        TimeSeries s1 = new TimeSeries("Датчик №1");
+        Map<Integer, TimeSeries> series = new HashMap<>();
+/*        TimeSeries s1 = new TimeSeries("Датчик №1");
         TimeSeries s2 = new TimeSeries("Датчик №2");
         TimeSeries s3 = new TimeSeries("Датчик №3");
-
+*/
         try (Connection conn = DriverManager.getConnection(
                 url, user, password)) {
 
@@ -42,25 +45,39 @@ public class ChartsShow extends ApplicationFrame {
                 System.out.println("Failed to make connection!");
             }
 
-            String queryRead = "SELECT * FROM core_sensors";
+            String queryReadSensor = "SELECT sensor FROM core_sensors";
 
             stmt = conn.createStatement();
+            rs = stmt.executeQuery(queryReadSensor);
+
+
+
+
+            while (rs.next()) {
+                int sensor = rs.getInt(1);
+                series.put(sensor, new TimeSeries("Датчик № " + sensor));
+            }
+//                int id = rs.getInt(1);
+//                Timestamp received_at = rs.getTimestamp(2);
+//                double value_1 = rs.getDouble(4);
+//                double value_2 = rs.getDouble(5);
+//                double value_3 = rs.getDouble(6);
+//                System.out.println(sensor);
+//                Second s = new Second(received_at);
+
+            String queryRead = "SELECT * FROM core_sensors";
+
             rs = stmt.executeQuery(queryRead);
 
             while (rs.next()) {
-
-                int id = rs.getInt(1);
                 Timestamp received_at = rs.getTimestamp(2);
                 int sensor = rs.getInt(3);
                 double value_1 = rs.getDouble(4);
                 double value_2 = rs.getDouble(5);
                 double value_3 = rs.getDouble(6);
-
                 Second s = new Second(received_at);
 
-                s1.addOrUpdate(s, value_1);
-                s2.addOrUpdate(s, value_2);
-                s3.addOrUpdate(s, value_3);
+                series.get(sensor).addOrUpdate(s, value_1);
             }
 
             rs.close();
@@ -75,9 +92,11 @@ public class ChartsShow extends ApplicationFrame {
         }
 
         TimeSeriesCollection dataset = new TimeSeriesCollection();
-        dataset.addSeries(s1);
+        series.forEach((k, v) -> dataset.addSeries(v));
+
+/*        dataset.addSeries(s1);
         dataset.addSeries(s2);
-        dataset.addSeries(s3);
+        dataset.addSeries(s3);*/
         return dataset;
     }
 

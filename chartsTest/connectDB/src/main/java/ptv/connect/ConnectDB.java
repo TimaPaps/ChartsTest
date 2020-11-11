@@ -46,7 +46,7 @@ public class ConnectDB {
 
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
-            System.out.println("not connect");
+            System.out.println("что то пошло не так");
         } catch (Exception e) {
             e.printStackTrace();
         }
