@@ -26,7 +26,7 @@ public class ChartsShow extends ApplicationFrame {
     private static Statement stmt = null;
     private static ResultSet rs = null;
 
-    private XYDataset readerDB() {
+    private XYDataset createDataset() {
         String url = "jdbc:postgresql://127.0.0.1:5432/charts_test";
         String user = "tima";
         String password = "";
@@ -138,7 +138,7 @@ public class ChartsShow extends ApplicationFrame {
     }
 
     public JPanel createDemoPanel() {
-        JFreeChart chart = createChart(readerDB());
+        JFreeChart chart = createChart(createDataset());
         chart.setPadding(new RectangleInsets(4, 8, 2, 2));
         ChartPanel panel = new ChartPanel(chart);
         panel.setFillZoomRectangle(true);

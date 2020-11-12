@@ -19,13 +19,11 @@ public class ConnectDB {
                 System.out.println("Failed to make connection!");
             }
 
-            String queryRead = "SELECT * FROM core_sensors";
-
             stmt = conn.createStatement();
 
             int i = 0;
             int[] list = {001, 002, 003};
-            while (i < 1) {
+            while (i < 3) {
                 for (int j = 0; j < list.length; j++) {
                     double valSinOne = Math.sin(0.1 * (i + 1)) * (j + 1);
                     double valSinTwo = Math.sin(0.2 * (i + 1)) * (j + 1);
