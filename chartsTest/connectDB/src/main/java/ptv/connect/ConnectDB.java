@@ -6,6 +6,10 @@ public class ConnectDB {
     private static Statement stmt = null;
     private static ResultSet rs = null;
 
+    public static void main(String[] args) throws Exception {
+        connectDB();
+    }
+
     public static void connectDB() {
         String url = "jdbc:postgresql://127.0.0.1:5432/charts_test";
         String user = "tima";
@@ -23,7 +27,7 @@ public class ConnectDB {
 
             int i = 0;
             int[] list = {001, 002, 003};
-            while (i < 3) {
+            while (i < 30) {
                 for (int j = 0; j < list.length; j++) {
                     double valSinOne = Math.sin(0.1 * (i + 1)) * (j + 1);
                     double valSinTwo = Math.sin(0.2 * (i + 1)) * (j + 1);
@@ -34,7 +38,7 @@ public class ConnectDB {
                             "VALUES (" + valSinOne + ", " + valSinTwo + ", " + valSinFree + ", " + sensor + " )";
                     stmt.executeUpdate(queryWrite);
                 }
-                Thread.sleep(1000);
+                Thread.sleep(3000);
                 i++;
             }
 

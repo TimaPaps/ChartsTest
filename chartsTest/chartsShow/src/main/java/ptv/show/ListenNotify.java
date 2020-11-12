@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
 import com.impossibl.postgres.jdbc.PGDataSource;
+import org.jfree.ui.RefineryUtilities;
 
 /**
  * This program uses the pgjdbc_ng driver which has an asynchronous
@@ -19,16 +20,14 @@ import com.impossibl.postgres.jdbc.PGDataSource;
  * would just take one event and then do something with it.
  *
  */
-public class ListenNotify
-{
+public class ListenNotify {
     // Create the queue that will be shared by the producer and consumer
     private BlockingQueue queue = new ArrayBlockingQueue(10);
 
     // Database connection
     PGConnection connection;
 
-    public ListenNotify()
-    {
+    public ListenNotify() {
 // Get database info from environment variables
         String DBHost = System.getenv("localhost");
         String DBName = System.getenv("charts_test");
@@ -36,18 +35,15 @@ public class ListenNotify
         String DBPassword = System.getenv("");
 
 // Create the listener callback
-        PGNotificationListener listener = new PGNotificationListener()
-        {
+        PGNotificationListener listener = new PGNotificationListener() {
             @Override
-            public void notification(int processId, String channelName, String payload)
-            {
+            public void notification(int processId, String channelName, String payload) {
 // Add event and payload to the queue
                 queue.add("/channels/" + channelName + " " + payload);
             }
         };
 
-        try
-        {
+        try {
 // Create a data source for logging into the db
             PGDataSource dataSource = new PGDataSource();
             dataSource.setHost(DBHost);
@@ -66,9 +62,7 @@ public class ListenNotify
             Statement statement = connection.createStatement();
             statement.execute("LISTEN q_event");
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -76,8 +70,7 @@ public class ListenNotify
     /**
      * @return shared queue
      */
-    public BlockingQueue getQueue()
-    {
+    public BlockingQueue getQueue() {
         return queue;
     }
 
@@ -87,8 +80,12 @@ public class ListenNotify
      *
      * @param args
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
+        ChartsShow demo = new ChartsShow("Тестовая отрисовка");
+        demo.pack();
+        RefineryUtilities.centerFrameOnScreen(demo);
+        demo.setVisible(true);
+
 // Create a new listener
         ListenNotify ln = new ListenNotify();
 
@@ -96,19 +93,15 @@ public class ListenNotify
         BlockingQueue queue = ln.getQueue();
 
 // Loop forever pulling messages off the queue
-        while (true)
-        {
-            try
-            {
+        while (true) {
+            try {
 // queue blocks until something is placed on it
                 String msg = (String) queue.take();
 
 // Do something with the event
                 System.out.println(msg);
 
-            }
-            catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

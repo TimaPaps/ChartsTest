@@ -10,7 +10,6 @@
     <modules>
         <module>connectDB</module>
         <module>chartsShow</module>
-        <module>main</module>
     </modules>
 
     <packaging>pom</packaging>
