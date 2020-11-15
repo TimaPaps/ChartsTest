@@ -6,7 +6,7 @@ public class ConnectDB {
     private static Statement stmt = null;
     private static ResultSet rs = null;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         connectDB();
     }
 
@@ -24,21 +24,24 @@ public class ConnectDB {
             }
 
             stmt = conn.createStatement();
+            String queryWrite = "DELETE FROM core_sensors";
+            stmt.executeUpdate(queryWrite);
 
             int i = 0;
             int[] list = {001, 002, 003};
-            while (i < 30) {
+            while (i < 1000) {
                 for (int j = 0; j < list.length; j++) {
-                    double valSinOne = Math.sin(0.1 * (i + 1)) * (j + 1);
-                    double valSinTwo = Math.sin(0.2 * (i + 1)) * (j + 1);
-                    double valSinFree = Math.sin(0.3 * (i + 1)) * (j + 1);
+                    double valSinOne = Math.sin(0.1 * (i + 1) * Math.PI  * ( j + 1) / 180);
+                    double valSinTwo = Math.sin(0.2 * (i + 1) * Math.PI  * ( j + 1) / 180);
+                    double valSinFree = Math.sin(0.3 * (i + 1) * Math.PI  * ( j + 1) / 180);
+
                     int sensor = list[j];
 
-                    String queryWrite = "INSERT INTO core_sensors (value_1, value_2, value_3, sensor) " +
+                    queryWrite = "INSERT INTO core_sensors (value_1, value_2, value_3, sensor) " +
                             "VALUES (" + valSinOne + ", " + valSinTwo + ", " + valSinFree + ", " + sensor + " )";
                     stmt.executeUpdate(queryWrite);
                 }
-                Thread.sleep(3000);
+                Thread.sleep(40);
                 i++;
             }
 

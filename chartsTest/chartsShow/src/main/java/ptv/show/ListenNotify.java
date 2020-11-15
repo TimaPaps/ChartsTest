@@ -2,13 +2,18 @@ package ptv.show;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import com.impossibl.postgres.api.jdbc.PGConnection;
 import com.impossibl.postgres.api.jdbc.PGNotificationListener;
 import com.impossibl.postgres.jdbc.PGDataSource;
+import org.jfree.data.time.Second;
 import org.jfree.ui.RefineryUtilities;
+
+import org.json.JSONObject;
 
 /**
  * This program uses the pgjdbc_ng driver which has an asynchronous
@@ -74,6 +79,8 @@ public class ListenNotify {
         return queue;
     }
 
+//    static String json = "...";
+
     /**
      *
      * main entry point
@@ -97,9 +104,22 @@ public class ListenNotify {
             try {
 // queue blocks until something is placed on it
                 String msg = (String) queue.take();
-
-// Do something with the event
+                msg = msg.substring(msg.indexOf("{"));
                 System.out.println(msg);
+
+                JSONObject obj = new JSONObject(msg);
+                String received_at = obj.getJSONObject("data").getString("created_at");
+                int sensor = obj.getJSONObject("data").getInt("sensor");
+                double value_1 =  obj.getJSONObject("data").getDouble("value_1");
+                double value_2 =  obj.getJSONObject("data").getDouble("value_2");
+                double value_3 =  obj.getJSONObject("data").getDouble("value_3");
+
+                received_at = received_at.replace("T", " ");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss.SSS");
+                Timestamp timestamp = Timestamp.valueOf(received_at);
+                Second sec = new Second(timestamp);
+
+                demo.addPoint(sec, sensor, value_1, value_2, value_3);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

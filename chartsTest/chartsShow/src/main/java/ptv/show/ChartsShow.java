@@ -25,13 +25,16 @@ public class ChartsShow extends ApplicationFrame {
 
     private static Statement stmt = null;
     private static ResultSet rs = null;
+    Map<Integer, TimeSeries> series = new HashMap<>();
+
+    public void addPoint(Second sec, int sensor, double y1, double y2, double y3) {
+        series.get(sensor).addOrUpdate(sec, y3);
+    }
 
     private XYDataset createDataset() {
         String url = "jdbc:postgresql://127.0.0.1:5432/charts_test";
         String user = "tima";
         String password = "";
-
-        Map<Integer, TimeSeries> series = new HashMap<>();
         TimeSeriesCollection dataset = new TimeSeriesCollection();
 
         try (Connection conn = DriverManager.getConnection(
@@ -59,15 +62,16 @@ public class ChartsShow extends ApplicationFrame {
 
             rs = stmt.executeQuery(queryRead);
 
+
             while (rs.next()) {
                 Timestamp received_at = rs.getTimestamp(2);
                 int sensor = rs.getInt(3);
                 double value_1 = rs.getDouble(4);
                 double value_2 = rs.getDouble(5);
                 double value_3 = rs.getDouble(6);
-                Second s = new Second(received_at);
+                Second sec = new Second(received_at);
 
-                series.get(sensor).addOrUpdate(s, value_3);
+                series.get(sensor).addOrUpdate(sec, value_3);
             }
 
             rs.close();
@@ -94,7 +98,7 @@ public class ChartsShow extends ApplicationFrame {
     public ChartsShow(String title) {
         super(title);
         ChartPanel chartPanel = (ChartPanel) createDemoPanel();
-        chartPanel.setPreferredSize(new java.awt.Dimension(750, 300));
+        chartPanel.setPreferredSize(new java.awt.Dimension(750, 500));
         setContentPane(chartPanel);
     }
 
@@ -132,7 +136,7 @@ public class ChartsShow extends ApplicationFrame {
         }
 
         DateAxis axis = (DateAxis) plot.getDomainAxis();
-        axis.setDateFormatOverride(new SimpleDateFormat("YYYY.MM.dd HH:mm:ss:S"));
+        axis.setDateFormatOverride(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss.S"));
 
         return chart;
     }
